@@ -1,0 +1,15 @@
+{
+  "name": "puckletter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "a.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@abandonware/noble": "*",
+    "ws": "^8.5.0"
+  }
+}
