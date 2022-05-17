@@ -16,11 +16,11 @@ GPIO.setup(encoder_button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 m = alsaaudio.Mixer('Headphone')
 
 # Set desired minimum and maximum values
-min = 0
+min = 74
 max = 100
 
 # Set the volume change step size
-volume_step_size = 5
+volume_step_size = 2
 
 is_Muted = m.getmute()[0]
 volume = m.getvolume()[0]
