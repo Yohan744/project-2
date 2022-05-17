@@ -4,6 +4,36 @@ import time
 
 ws = create_connection("ws://localhost:8000")
 
+'''
+
+clk = 38
+dt = 36
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(clk, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(dt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+counter = 0
+clkLastState = GPIO.input(clk)
+
+try:
+
+    while True:
+        clkState = GPIO.input(clk)
+        dtState = GPIO.input(dt)
+        if clkState != clkLastState:
+            if dtState != clkState:
+                counter += 1
+            else:
+                counter -= 1
+            print(counter)
+        clkLastState = clkState
+        time.sleep(0.01)
+finally:
+    GPIO.cleanup()
+    
+'''
+
 
 class ProtocolGenerator:
 
@@ -33,11 +63,6 @@ modeON = ProtocolGenerator(key="mode", value="PRATIQUE")
 modeOFF = ProtocolGenerator(key="mode", value="LIBRE")
 validationON = ProtocolGenerator(key="validation", value="ACTIVATE")
 validationOFF = ProtocolGenerator(key="validation", value="DEACTIVATE")
-instructionON = ProtocolGenerator(key="instruction", value="ACTIVATE")
-instructionOFF = ProtocolGenerator(key="instruction", value="DEACTIVATE")
-
-startingModeLibre = ProtocolGenerator(key="startingMode", value="0")
-startingModePratique = ProtocolGenerator(key="startingMode", value="1")
 
 
 def waitingButton():
@@ -57,7 +82,6 @@ GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(40, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(19, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 waitingButton()
 
@@ -70,13 +94,6 @@ tempory_state5 = False
 tempory_state6 = False
 tempory_stateM = False
 tempory_stateV = False
-tempory_stateI = False
-
-current_stateM = GPIO.input(40)
-if current_stateM == 0:
-    ws.send(startingModeLibre.create())
-else :
-    ws.send(startingModePratique.create())
 
 while True:
 
@@ -89,7 +106,6 @@ while True:
     current_state6 = GPIO.input(21)
     current_stateM = GPIO.input(40)
     current_stateV = GPIO.input(19)
-    current_stateI = GPIO.input(26)
 
     if current_state0:
         if current_state0 != tempory_state0:
@@ -166,20 +182,12 @@ while True:
     if current_stateV:
         if current_stateV != tempory_stateV:
             print("VALIDATION : ON")
+            print(validationON.create())
             ws.send(validationON.create())
     else:
         if current_stateV != tempory_stateV:
             print("VALIDATION : OFF")
             ws.send(validationOFF.create())
-
-    if current_stateI:
-        if current_stateI != tempory_stateI:
-            print("INSTRUCTION : ON")
-            ws.send(instructionON.create())
-    else:
-        if current_stateI != tempory_stateI:
-            print("INSTRUCTION : OFF")
-            ws.send(instructionOFF.create())
 
     tempory_state0 = current_state0
     tempory_state1 = current_state1
@@ -190,6 +198,5 @@ while True:
     tempory_state6 = current_state6
     tempory_stateM = current_stateM
     tempory_stateV = current_stateV
-    tempory_stateI = current_stateI
 
     time.sleep(0.3)
