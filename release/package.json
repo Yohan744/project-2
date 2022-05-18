@@ -1,0 +1,16 @@
+{
+  "name": "5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "dev": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@abandonware/noble": "*",
+    "ws": "^8.5.0"
+  }
+}
