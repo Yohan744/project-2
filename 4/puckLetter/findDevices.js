@@ -19,7 +19,7 @@ function onDiscovery(peripheral) {
 noble.on('stateChange', function (state) {
     if (state != "poweredOn") return;
     console.log("Starting scan...");
-    noble.startScanning([], false);
+     noble.startScanning(["6e400001b5a3f393e0a9e50e24dcca9e"], false)
 });
 noble.on('discover', onDiscovery);
 noble.on('scanStart', function () {
