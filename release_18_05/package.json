@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@abandonware/noble": "*",
+    "@abandonware/bluetooth-hci-socket": "^0.5.3-8",
+    "@abandonware/noble": "^1.9.2-15",
+    "kill-port": "^2.0.0",
     "ws": "^8.5.0"
   }
 }

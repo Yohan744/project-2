@@ -9,6 +9,14 @@ sudo npm install
 sudo npm install kill-port
 ```
 
+```
+sudo chmod 755 say.sh
+```
+
+```
+sudo npm install @abandonware/bluetooth-hci-socket --unsafe-perm
+```
+
 ## Start
 ___
 
