@@ -35,28 +35,30 @@ function onDeviceChanged(address, data) {
 
 function onDiscovery(peripheral) {
 
-    /*
-    console.log('peripheral discovered:');
-    console.log('\t\t' + peripheral.advertisement.localName);
-    console.log('\t\t' + JSON.stringify(peripheral.advertisement.serviceUuids));
-    console.log();
-     */
+    name = peripheral.advertisement.localName
 
-    if (devices.indexOf(peripheral.address) < 0){
-        return;
+    if (name !== undefined) {
+
+        if (name.includes("Puck")) {
+
+            let data = peripheral.advertisement.manufacturerData.slice(2);
+
+            if (JSON.stringify(lastAdvertising[peripheral.address]) !== JSON.stringify(data)) {
+                onDeviceChanged(peripheral.address, data)
+            }
+
+            lastAdvertising[peripheral.address] = data;
+
+        }
+
     }
-    if (!peripheral.advertisement.manufacturerData || peripheral.advertisement.manufacturerData[0] !== 0x90 || peripheral.advertisement.manufacturerData[1] !== 0x05) {
-        return;
-    }
-    let data = peripheral.advertisement.manufacturerData.slice(2);
-     if (JSON.stringify(lastAdvertising[peripheral.address]) !== JSON.stringify(data)) {
-         onDeviceChanged(peripheral.address, data)
-     }
-    lastAdvertising[peripheral.address] = data;
+
 }
 
 noble.on('stateChange', function (state) {
-    if (state !== "poweredOn") return;
+    if (state !== "poweredOn"){
+        return
+    }
     console.log("Starting scan...");
     noble.startScanning([], true)
 });
