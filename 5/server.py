@@ -1,5 +1,4 @@
 from simple_websocket_server import WebSocketServer, WebSocket
-from volume import GlobalVolume
 from typing import List
 import os
 import random
@@ -243,23 +242,33 @@ class Instruction:
 
 class Sound:
 
-    volume = GlobalVolume.globalVolume
+    volume = 100
 
     def start(self):
+        self.getActualVolume()
         return os.system("play -v " + str((self.volume/100)) + " sounds/start.wav")
 
     def correct(self):
+        self.getActualVolume()
         return os.system("play -v " + str((self.volume/100)) + " sounds/correct.wav")
 
     def confirmation(self):
+        self.getActualVolume()
         return os.system("play -v " + str((self.volume/100)) + " sounds/confirmation.wav")
 
     def wrong(self):
+        self.getActualVolume()
         return os.system("play -v " + str((self.volume/100)) + " sounds/wrong.wav")
+
+    def getActualVolume(self):
+        f = open("variables.json", "r")
+        data = json.load(f)
+        f.close()
+        self.volume = data["volume"]
 
 
 class CancelActions:
-    f = open("check.json", "r")
+    f = open("variables.json", "r")
     data = json.load(f)
     f.close()
 
@@ -272,8 +281,10 @@ class CancelActions:
         self.updateJson()
 
     def updateJson(self):
-        f = open("check.json", "w")
-        json.dump(self.data, f)
+        f = open("variables.json", "w")
+        f.seek(0)
+        f.write(json.dumps(self.data))
+        f.truncate()
         f.close()
 
 
@@ -284,7 +295,6 @@ mode = Mode()
 instructions = Instruction()
 sound = Sound()
 cancelActions = CancelActions()
-globalVolume = GlobalVolume()
 
 server = WebSocketServer('', 8000, SimpleEcho)
 server.serve_forever()

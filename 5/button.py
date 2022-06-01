@@ -94,7 +94,7 @@ while True:
     current_stateV = GPIO.input(19)
     current_stateI = GPIO.input(26)
 
-    f = open("check.json", "r")
+    f = open("variables.json", "r")
     data = json.load(f)
     f.close()
 

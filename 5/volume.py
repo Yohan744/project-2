@@ -1,5 +1,7 @@
 from RPi import GPIO
 import alsaaudio
+import json
+from datetime import datetime
 
 encoder_data = 36
 encoder_clk = 38
@@ -22,12 +24,31 @@ print("")
 clkLastState = GPIO.input(encoder_clk)
 
 
-class GlobalVolume:
-    globalVolume = 100
+class SaveVolume:
+    lastSave = datetime.now()
+    isSave = True
+
+    def save(self):
+        delta = datetime.now() - self.lastSave
+        if int(delta.total_seconds()) > 1 and self.isSave == False:
+            print("saving")
+            f = open("variables.json", "r")
+            data = json.load(f)
+            f.close()
+            data["volume"] = int(volume)
+            f = open("variables.json", "w")
+            f.seek(0)
+            f.write(json.dumps(data))
+            f.truncate()
+            f.close()
+            self.isSave = True
+
+    def setSave(self):
+        self.isSave = False
+        self.lastSave = datetime.now()
 
 
-globalVolume = GlobalVolume()
-
+saveVolume = SaveVolume()
 
 try:
     while True:
@@ -44,11 +65,10 @@ try:
                     volume = min
             if clkState == 1:
                 print("Volume: " + str(int(volume)))
-                globalVolume.globalVolume = volume
                 print("")
                 m.setvolume(int(volume))
-
-
+                saveVolume.setSave()
         clkLastState = clkState
+        saveVolume.save()
 finally:
     GPIO.cleanup()
