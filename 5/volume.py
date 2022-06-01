@@ -1,8 +1,5 @@
 from RPi import GPIO
-from time import sleep
 import alsaaudio
-
-# Change the following pins based on your application or HAT in use
 
 encoder_data = 36
 encoder_clk = 38
@@ -13,11 +10,9 @@ GPIO.setup(encoder_data, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 m = alsaaudio.Mixer('Headphone')
 
-# Set desired minimum and maximum values
 min = 74
 max = 100
 
-# Set the volume change step size
 volume_step_size = 2
 
 volume = m.getvolume()[0]
@@ -25,6 +20,14 @@ volume = m.getvolume()[0]
 print("Volume: " + str(volume))
 print("")
 clkLastState = GPIO.input(encoder_clk)
+
+
+class GlobalVolume:
+    globalVolume = 100
+
+
+globalVolume = GlobalVolume()
+
 
 try:
     while True:
@@ -41,8 +44,11 @@ try:
                     volume = min
             if clkState == 1:
                 print("Volume: " + str(int(volume)))
+                globalVolume.globalVolume = volume
                 print("")
                 m.setvolume(int(volume))
+
+
         clkLastState = clkState
 finally:
     GPIO.cleanup()

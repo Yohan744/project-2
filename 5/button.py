@@ -1,6 +1,8 @@
+import websocket
 from websocket import create_connection
 import RPi.GPIO as GPIO
 import time
+import json
 
 ws = create_connection("ws://localhost:8000")
 
@@ -75,8 +77,9 @@ tempory_stateI = False
 current_stateM = GPIO.input(40)
 if current_stateM == 0:
     ws.send(startingModeLibre.create())
-else :
+else:
     ws.send(startingModePratique.create())
+
 
 while True:
 
@@ -91,95 +94,100 @@ while True:
     current_stateV = GPIO.input(19)
     current_stateI = GPIO.input(26)
 
-    if current_state0:
-        if current_state0 != tempory_state0:
-            print("BOUTON 0 : ON")
-            ws.send(zeroON.create())
-    else:
-        if current_state0 != tempory_state0:
-            print("BOUTON 0 : OFF")
-            ws.send(zeroOFF.create())
+    f = open("check.json", "r")
+    data = json.load(f)
+    f.close()
 
-    if current_state1:
-        if current_state1 != tempory_state1:
-            print("BOUTON 1 : ON")
-            ws.send(oneON.create())
-    else:
-        if current_state1 != tempory_state1:
-            print("BOUTON 1 : OFF")
-            ws.send(oneOFF.create())
+    if data["cancelActions"] == 0:
+        if current_state0:
+            if current_state0 != tempory_state0:
+                print("BOUTON 0 : ON")
+                ws.send(zeroON.create())
+        else:
+            if current_state0 != tempory_state0:
+                print("BOUTON 0 : OFF")
+                ws.send(zeroOFF.create())
 
-    if current_state2:
-        if current_state2 != tempory_state2:
-            print("BOUTON 2 : ON")
-            ws.send(twoON.create())
-    else:
-        if current_state2 != tempory_state2:
-            print("BOUTON 2 : OFF")
-            ws.send(twoOFF.create())
+        if current_state1:
+            if current_state1 != tempory_state1:
+                print("BOUTON 1 : ON")
+                ws.send(oneON.create())
+        else:
+            if current_state1 != tempory_state1:
+                print("BOUTON 1 : OFF")
+                ws.send(oneOFF.create())
 
-    if current_state3:
-        if current_state3 != tempory_state3:
-            print("BOUTON 3 : ON")
-            ws.send(threeON.create())
-    else:
-        if current_state3 != tempory_state3:
-            print("BOUTON 3 : OFF")
-            ws.send(threeOFF.create())
+        if current_state2:
+            if current_state2 != tempory_state2:
+                print("BOUTON 2 : ON")
+                ws.send(twoON.create())
+        else:
+            if current_state2 != tempory_state2:
+                print("BOUTON 2 : OFF")
+                ws.send(twoOFF.create())
 
-    if current_state4:
-        if current_state4 != tempory_state4:
-            print("BOUTON 4 : ON")
-            ws.send(fourON.create())
-    else:
-        if current_state4 != tempory_state4:
-            print("BOUTON 4 : OFF")
-            ws.send(fourOFF.create())
+        if current_state3:
+            if current_state3 != tempory_state3:
+                print("BOUTON 3 : ON")
+                ws.send(threeON.create())
+        else:
+            if current_state3 != tempory_state3:
+                print("BOUTON 3 : OFF")
+                ws.send(threeOFF.create())
 
-    if current_state5:
-        if current_state5 != tempory_state5:
-            print("BOUTON 5 : ON")
-            ws.send(fiveON.create())
-    else:
-        if current_state5 != tempory_state5:
-            print("BOUTON 5 : OFF")
-            ws.send(fiveOFF.create())
+        if current_state4:
+            if current_state4 != tempory_state4:
+                print("BOUTON 4 : ON")
+                ws.send(fourON.create())
+        else:
+            if current_state4 != tempory_state4:
+                print("BOUTON 4 : OFF")
+                ws.send(fourOFF.create())
 
-    if current_state6:
-        if current_state6 != tempory_state6:
-            print("BOUTON 6 : ON")
-            ws.send(sixON.create())
-    else:
-        if current_state6 != tempory_state6:
-            print("BOUTON 6 : OFF")
-            ws.send(sixOFF.create())
+        if current_state5:
+            if current_state5 != tempory_state5:
+                print("BOUTON 5 : ON")
+                ws.send(fiveON.create())
+        else:
+            if current_state5 != tempory_state5:
+                print("BOUTON 5 : OFF")
+                ws.send(fiveOFF.create())
 
-    if current_stateM:
-        if current_stateM != tempory_stateM:
-            print("MODE : PRATIQUE")
-            ws.send(modeON.create())
-    else:
-        if current_stateM != tempory_stateM:
-            print("MODE : LIBRE")
-            ws.send(modeOFF.create())
+        if current_state6:
+            if current_state6 != tempory_state6:
+                print("BOUTON 6 : ON")
+                ws.send(sixON.create())
+        else:
+            if current_state6 != tempory_state6:
+                print("BOUTON 6 : OFF")
+                ws.send(sixOFF.create())
 
-    if current_stateV:
-        if current_stateV != tempory_stateV:
-            print("VALIDATION : ON")
-            ws.send(validationON.create())
-    else:
-        if current_stateV != tempory_stateV:
-            print("VALIDATION : OFF")
-            ws.send(validationOFF.create())
+        if current_stateM:
+            if current_stateM != tempory_stateM:
+                print("MODE : PRATIQUE")
+                ws.send(modeON.create())
+        else:
+            if current_stateM != tempory_stateM:
+                print("MODE : LIBRE")
+                ws.send(modeOFF.create())
 
-    if current_stateI:
-        if current_stateI != tempory_stateI:
-            print("INSTRUCTION : ON")
-            ws.send(instructionON.create())
-    else:
-        if current_stateI != tempory_stateI:
-            print("INSTRUCTION : OFF")
-            ws.send(instructionOFF.create())
+        if current_stateV:
+            if current_stateV != tempory_stateV:
+                print("VALIDATION : ON")
+                ws.send(validationON.create())
+        else:
+            if current_stateV != tempory_stateV:
+                print("VALIDATION : OFF")
+                ws.send(validationOFF.create())
+
+        if current_stateI:
+            if current_stateI != tempory_stateI:
+                print("INSTRUCTION : ON")
+                ws.send(instructionON.create())
+        else:
+            if current_stateI != tempory_stateI:
+                print("INSTRUCTION : OFF")
+                ws.send(instructionOFF.create())
 
     tempory_state0 = current_state0
     tempory_state1 = current_state1
@@ -192,4 +200,4 @@ while True:
     tempory_stateV = current_stateV
     tempory_stateI = current_stateI
 
-    time.sleep(0.3)
+    time.sleep(0.01)

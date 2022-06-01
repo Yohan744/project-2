@@ -1,8 +1,9 @@
 from simple_websocket_server import WebSocketServer, WebSocket
+from volume import GlobalVolume
 from typing import List
 import os
 import random
-import time
+import json
 
 
 class ProtocolDecodeur:
@@ -44,11 +45,12 @@ class SimpleEcho(WebSocket):
             if letter.verificationLetter:
                 buttons.tabButtons[key] = letter.getLetter()
                 letter.resetLetter()
-                sound.start()
+                sound.confirmation()
             else:
                 buttons.tabButtons[key] = ""
 
         if protocolDecodeur.getKey() == 'mode':
+            cancelActions.true()
             if protocolDecodeur.getValue() == 'LIBRE':
                 mode.actualMode = "libre"
                 mode.sayActualMode()
@@ -59,8 +61,10 @@ class SimpleEcho(WebSocket):
                 mode.instructionPratiqueMode()
                 letter.resetLetter()
             buttons.resetButtons()
+            cancelActions.false()
 
         if protocolDecodeur.getKeyValue() == ['validation', 'ACTIVATE']:
+            cancelActions.true()
             word.createWord()
             print("Mot actuel : " + word.word)
             if mode.actualMode == "libre":
@@ -82,14 +86,16 @@ class SimpleEcho(WebSocket):
                     else:
                         word.createWordToMake()
                         mode.instructionPratiqueMode()
-
                 else:
                     sound.wrong()
                     word.spellWord()
                     word.checkTheWord()
+            cancelActions.false()
 
         if protocolDecodeur.getKeyValue() == ['instruction', 'ACTIVATE']:
+            cancelActions.true()
             instructions.tellInstructions()
+            cancelActions.false()
 
         print("")
         print(buttons.tabButtons)
@@ -111,7 +117,6 @@ class Letter:
     def changeLetter(self, letter):
         self.puckLetter = letter
         self.verificationLetter = True
-        print("Letter is " + self.puckLetter)
 
     def getLetter(self):
         return self.puckLetter
@@ -238,14 +243,38 @@ class Instruction:
 
 class Sound:
 
+    volume = GlobalVolume.globalVolume
+
     def start(self):
-        return os.system("play sounds/start.wav")
+        return os.system("play -v " + str((self.volume/100)) + " sounds/start.wav")
 
     def correct(self):
-        return os.system("play sounds/correct.wav")
+        return os.system("play -v " + str((self.volume/100)) + " sounds/correct.wav")
+
+    def confirmation(self):
+        return os.system("play -v " + str((self.volume/100)) + " sounds/confirmation.wav")
 
     def wrong(self):
-        return os.system("play sounds/wrong.wav")
+        return os.system("play -v " + str((self.volume/100)) + " sounds/wrong.wav")
+
+
+class CancelActions:
+    f = open("check.json", "r")
+    data = json.load(f)
+    f.close()
+
+    def true(self):
+        self.data["cancelActions"] = 1
+        self.updateJson()
+
+    def false(self):
+        self.data["cancelActions"] = 0
+        self.updateJson()
+
+    def updateJson(self):
+        f = open("check.json", "w")
+        json.dump(self.data, f)
+        f.close()
 
 
 buttons = Buttons()
@@ -254,6 +283,8 @@ word = Word()
 mode = Mode()
 instructions = Instruction()
 sound = Sound()
+cancelActions = CancelActions()
+globalVolume = GlobalVolume()
 
 server = WebSocketServer('', 8000, SimpleEcho)
 server.serve_forever()

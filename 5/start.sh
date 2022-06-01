@@ -4,7 +4,7 @@
 
 cd /
 cd home/pi/Desktop/yohan/proto/5
-sleep 5
+# sleep 5
 python server.py &
 sleep 5
 node advertising.js &

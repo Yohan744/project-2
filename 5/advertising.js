@@ -16,8 +16,7 @@ const tabDevices = {
     "ed:0d:64:c9:a2:e5": "e", // A2E5
     "ef:2d:7d:bc:69:02": "i", // 6902
     "e4:8d:e2:32:6a:7e": "l", // 6A7E
-    "d3:a2:fb:dc:17:0f": "t", // 170F
-    "c8:e6:c2:7b:ea:0b": "x" // EA0B -----
+    "d3:a2:fb:dc:17:0f": "t" // 170F
 }
 
 const tabDevicesKeys = Object.keys(tabDevices)
