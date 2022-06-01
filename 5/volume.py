@@ -17,7 +17,12 @@ max = 100
 
 volume_step_size = 2
 
-volume = m.getvolume()[0]
+f = open("variables.json", "r")
+data = json.load(f)
+f.close()
+
+# volume = m.getvolume()[0]
+volume = data["volume"]
 
 print("Volume: " + str(volume))
 print("")
@@ -31,7 +36,6 @@ class SaveVolume:
     def save(self):
         delta = datetime.now() - self.lastSave
         if int(delta.total_seconds()) > 1 and self.isSave == False:
-            print("saving")
             f = open("variables.json", "r")
             data = json.load(f)
             f.close()
