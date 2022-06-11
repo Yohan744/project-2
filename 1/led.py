@@ -1,52 +1,26 @@
-from websocket import create_connection
 import RPi.GPIO as GPIO
 import time
-# initialize GPIO
-GPIO.setwarnings(False)
+
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(38, GPIO.LOW)
-GPIO.cleanup()
-# read data using pin 14
+GPIO.setwarnings(False)
 
-ws = create_connection("ws://localhost:8000")
+LED2 = 3
+LED = 5
 
+GPIO.setup(LED, GPIO.OUT)
+GPIO.setup(LED2, GPIO.OUT)
 
-class ProtocolGenerator:
+GPIO.output(LED, GPIO.HIGH)
+GPIO.output(LED2, GPIO.LOW)
+time.sleep(3)
+GPIO.output(LED, GPIO.LOW)
+GPIO.output(LED2, GPIO.HIGH)
+time.sleep(3)
+GPIO.output(LED, GPIO.HIGH)
+GPIO.output(LED2, GPIO.LOW)
+time.sleep(3)
+GPIO.output(LED, GPIO.LOW)
+GPIO.output(LED2, GPIO.HIGH)
 
-    def __init__(self, key: str, value: str):
-        self.key = key
-        self.value = value
-
-    def create(self) -> str:
-        return f"{self.key}:{self.value}"
-
-
-class Led:
-
-    def lightLed(self):
-        print("LIGHT UP")
-        GPIO.setup(38, GPIO.HIGH)
-
-
-testttt = Led
-
-'''
-while True:
-
-    result = instance.read()
-    protocolGeneratorTemp = ProtocolGenerator(key="temperature", value=f'{temp}')
-    protocolGeneratorHumi = ProtocolGenerator(key="humidity", value=f'{humi}')
-
-    if result.is_valid():
-        print("sending data")
-        print("TEMPERATURE " + protocolGeneratorTemp.create())
-        print("HUMIDITY " + protocolGeneratorHumi.create())
-        ws.send(protocolGeneratorTemp.create())
-        ws.send(protocolGeneratorHumi.create())
-        print("Sent")
-        result = ws.recv()
-        print("Received")
-    else:
-        print("Error: %d" % result.error_code)
-    time.sleep(3)
-'''
+GPIO.output(LED, GPIO.LOW)
+GPIO.output(LED2, GPIO.LOW)

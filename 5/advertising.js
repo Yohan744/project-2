@@ -41,6 +41,7 @@ function onDiscovery(peripheral) {
         if (name.includes("Puck")) {
 
             let data = peripheral.advertisement.manufacturerData.slice(2);
+            console.log(data);
 
             if (JSON.stringify(lastAdvertising[peripheral.address]) !== JSON.stringify(data)) {
                 onDeviceChanged(peripheral.address, data)

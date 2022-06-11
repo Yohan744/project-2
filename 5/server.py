@@ -87,7 +87,9 @@ class SimpleEcho(WebSocket):
                         mode.instructionPratiqueMode()
                 else:
                     sound.wrong()
+                    led.checkCurrentTabButtons()
                     word.spellWord()
+                    led.cleanTabButtonsLed()
                     word.checkTheWord()
             cancelActions.false()
 
@@ -222,7 +224,7 @@ class Instruction:
         return os.system("./say.sh 'Pour lancer les consignes, appuis sur le bouton en haut à gauche'")
 
     def tellInstructions(self):
-        return os.system("./say.sh 'Tu es bien dans les consignes, je vais texpliquer mon fonctionnement.'"), os.system(
+        '''return os.system("./say.sh 'Tu es bien dans les consignes, je vais texpliquer mon fonctionnement.'"), os.system(
             "sleep 0.5"), os.system(
             "./say.sh 'Tu trouveras des cubes dans la partie rangement, qui se détache avec les scratchs, situés sur les tranches de la tablette.'"), os.system(
             "sleep 0.5"), os.system(
@@ -236,29 +238,28 @@ class Instruction:
             "sleep 0.5"), os.system(
             "./say.sh 'Pour choisir ton mode, c’est lintérrupteur en haut à droite sur la surface de la tablette. '"), os.system(
             "sleep 0.5"), os.system(
-            "./say.sh 'Tu es là pour apprendre, avances à ton rythme !'")
-        # return os.system("./say.sh 'Voici les consignes, bla bla bla'")
+            "./say.sh 'Tu es là pour apprendre, avances à ton rythme !'")'''
+        return os.system("./say.sh 'Voici les consignes, bla bla bla'")
 
 
 class Sound:
-
     volume = 100
 
     def start(self):
         self.getActualVolume()
-        return os.system("play -v " + str((self.volume/100)) + " sounds/start.wav")
+        return os.system("play -v " + str((self.volume / 100)) + " sounds/start.wav")
 
     def correct(self):
         self.getActualVolume()
-        return os.system("play -v " + str((self.volume/100)) + " sounds/correct.wav")
+        return os.system("play -v " + str((self.volume / 100)) + " sounds/correct.wav")
 
     def confirmation(self):
         self.getActualVolume()
-        return os.system("play -v " + str((self.volume/100)) + " sounds/confirmation.wav")
+        return os.system("play -v " + str((self.volume / 100)) + " sounds/confirmation.wav")
 
     def wrong(self):
         self.getActualVolume()
-        return os.system("play -v " + str((self.volume/100)) + " sounds/wrong.wav")
+        return os.system("play -v " + str((self.volume / 100)) + " sounds/wrong.wav")
 
     def getActualVolume(self):
         f = open("variables.json", "r")
@@ -268,20 +269,68 @@ class Sound:
 
 
 class CancelActions:
-    f = open("variables.json", "r")
-    data = json.load(f)
-    f.close()
+    data = ""
+
+    def openFile(self):
+        f = open("variables.json", "r")
+        self.data = json.load(f)
+        f.close()
 
     def true(self):
+        self.openFile()
         self.data["cancelActions"] = 1
         self.updateJson()
 
     def false(self):
+        self.openFile()
         self.data["cancelActions"] = 0
         self.updateJson()
 
     def updateJson(self):
         f = open("variables.json", "w")
+        f.seek(0)
+        f.write(json.dumps(self.data))
+        f.truncate()
+        f.close()
+
+
+class Led:
+    tabButtonsLed = ""
+    data = ""
+
+    def checkCurrentTabButtons(self):
+        self.cleanTabButtonsLed()
+        for i in range(len(word.wordToCreate)):
+            if len(word.word) == len(word.wordToCreate):
+                if word.word[i] != word.wordToCreate[i]:
+                    print("0")
+                    self.tabButtonsLed = self.tabButtonsLed + str(0)
+                else:
+                    print("1")
+                    self.tabButtonsLed = self.tabButtonsLed + str(1)
+            else:
+                print("0")
+        self.sendTabButtonsLed()
+
+    def openLedFile(self):
+        f = open("variableLed.json", "r")
+        self.data = json.load(f)
+        f.close()
+
+    def sendTabButtonsLed(self):
+        self.openLedFile()
+        self.data["tabButtonsLed"] = self.tabButtonsLed
+        f = open("variableLed.json", "w")
+        f.seek(0)
+        f.write(json.dumps(self.data))
+        f.truncate()
+        f.close()
+
+    def cleanTabButtonsLed(self):
+        self.openLedFile()
+        self.tabButtonsLed = ""
+        self.data["tabButtonsLed"] = ""
+        f = open("variableLed.json", "w")
         f.seek(0)
         f.write(json.dumps(self.data))
         f.truncate()
@@ -295,6 +344,9 @@ mode = Mode()
 instructions = Instruction()
 sound = Sound()
 cancelActions = CancelActions()
+led = Led()
+
+cancelActions.false()
 
 server = WebSocketServer('', 8000, SimpleEcho)
 server.serve_forever()

@@ -3,7 +3,7 @@ import alsaaudio
 import json
 from datetime import datetime
 
-encoder_data = 36
+encoder_data = 24
 encoder_clk = 38
 
 GPIO.setmode(GPIO.BOARD)
@@ -35,7 +35,7 @@ class SaveVolume:
 
     def save(self):
         delta = datetime.now() - self.lastSave
-        if int(delta.total_seconds()) > 1 and self.isSave == False:
+        if int(delta.total_seconds()) > 1.5 and self.isSave == False:
             f = open("variables.json", "r")
             data = json.load(f)
             f.close()
