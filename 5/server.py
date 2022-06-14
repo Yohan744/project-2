@@ -77,7 +77,9 @@ class SimpleEcho(WebSocket):
                 print("Mot à refaire : " + word.wordToCreate)
                 if word.word == word.wordToCreate:
                     sound.correct()
+                    led.checkCurrentTabButtons()
                     word.spellWord()
+                    led.cleanTabButtonsLed()
                     mode.goodWord()
                     buttons.resetButtons()
                     if len(word.listOfWords) == 0:
@@ -89,8 +91,8 @@ class SimpleEcho(WebSocket):
                     sound.wrong()
                     led.checkCurrentTabButtons()
                     word.spellWord()
-                    led.cleanTabButtonsLed()
                     word.checkTheWord()
+                    led.cleanTabButtonsLed()
             cancelActions.false()
 
         if protocolDecodeur.getKeyValue() == ['instruction', 'ACTIVATE']:
@@ -140,8 +142,8 @@ class Word:
     nbOfLetterMissing: int
     nbOfError: int
     tabError = []
-    listOfWords = ["caliner", "lancer", "racine", "acier", "caler", "clair", "calin",
-                   "crane", "liane", "nacre", "ciel", "nier", "rien", "cire",
+    listOfWords = ["lancer", "racine", "acier", "caler", "clair", "calin",
+                   "crane", "liane", "ciel", "rien", "cire",
                    "lier", "rail", "cri", "lac"]
 
     def createWord(self):
@@ -224,7 +226,7 @@ class Instruction:
         return os.system("./say.sh 'Pour lancer les consignes, appuis sur le bouton en haut à gauche'")
 
     def tellInstructions(self):
-        '''return os.system("./say.sh 'Tu es bien dans les consignes, je vais texpliquer mon fonctionnement.'"), os.system(
+        return os.system("./say.sh 'Tu es bien dans les consignes, je vais texpliquer mon fonctionnement.'"), os.system(
             "sleep 0.5"), os.system(
             "./say.sh 'Tu trouveras des cubes dans la partie rangement, qui se détache avec les scratchs, situés sur les tranches de la tablette.'"), os.system(
             "sleep 0.5"), os.system(
@@ -238,8 +240,7 @@ class Instruction:
             "sleep 0.5"), os.system(
             "./say.sh 'Pour choisir ton mode, c’est lintérrupteur en haut à droite sur la surface de la tablette. '"), os.system(
             "sleep 0.5"), os.system(
-            "./say.sh 'Tu es là pour apprendre, avances à ton rythme !'")'''
-        return os.system("./say.sh 'Voici les consignes, bla bla bla'")
+            "./say.sh 'Tu es là pour apprendre, avances à ton rythme !'")
 
 
 class Sound:
@@ -347,6 +348,7 @@ cancelActions = CancelActions()
 led = Led()
 
 cancelActions.false()
+led.cleanTabButtonsLed()
 
 server = WebSocketServer('', 8000, SimpleEcho)
 server.serve_forever()

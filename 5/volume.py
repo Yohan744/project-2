@@ -21,8 +21,8 @@ f = open("variables.json", "r")
 data = json.load(f)
 f.close()
 
-# volume = m.getvolume()[0]
-volume = data["volume"]
+volume = m.getvolume()[0]
+# volume = 100
 
 print("Volume: " + str(volume))
 print("")

@@ -1,4 +1,3 @@
-import websocket
 from websocket import create_connection
 import RPi.GPIO as GPIO
 import time
@@ -50,8 +49,8 @@ def waitingButton():
 GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(37, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(35, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(3, GPIO.OUT)
+GPIO.setup(5, GPIO.OUT)
 GPIO.setup(33, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(31, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(29, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -83,8 +82,8 @@ else:
 
 while True:
 
-    current_state0 = GPIO.input(37)
-    current_state1 = GPIO.input(35)
+    current_state0 = GPIO.input(3)
+    current_state1 = GPIO.input(5)
     current_state2 = GPIO.input(33)
     current_state3 = GPIO.input(31)
     current_state4 = GPIO.input(29)
@@ -200,4 +199,4 @@ while True:
     tempory_stateV = current_stateV
     tempory_stateI = current_stateI
 
-    time.sleep(0.01)
+    time.sleep(0.1)

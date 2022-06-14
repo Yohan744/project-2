@@ -4,6 +4,7 @@
 
 cd /
 cd home/pi/Desktop/yohan/proto/5
+python cancelLed.py &
 sleep 5
 python server.py &
 sleep 5
